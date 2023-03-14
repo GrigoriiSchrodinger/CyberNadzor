@@ -1,0 +1,8 @@
+.idea
+__pycache__/
+database.sql
+.env
+.venv
+env/
+venv/
+ENV/
