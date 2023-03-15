@@ -8,7 +8,12 @@ logger = settings.setup_custom_logger('root')
 
 @dp.message_handler(commands=['start'])
 async def start_command(message: types.Message):
-    print("xyu")
+    db.add_users(
+        username=message.chat.username,
+        last_name=message.chat.last_name,
+        first_name=message.chat.first_name,
+        id_user=message.chat.id
+    )
 
 
 async def on_startup(dp):

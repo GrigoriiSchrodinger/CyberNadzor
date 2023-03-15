@@ -1,6 +1,6 @@
 .idea
 __pycache__/
-database.sql
+*.db
 .env
 .venv
 env/

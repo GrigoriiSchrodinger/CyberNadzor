@@ -11,14 +11,24 @@ class DataBaseManager(object):
 
     def create_tables(self):
         """
-        CREATE TABLE users
+        CREATE TABLE:
+        - users
         """
-        self.request(
-            "CREATE TABLE IF NOT EXISTS users ("
-            "id INTEGER PRIMARY KEY, "
-            "name_users TEXT NOT NULL, "
-            "id_users TEXT NOT NULL)"
-        )
+        with open('DataBase/sqlite_create_tables.sql', 'r') as sqlite_file:
+            sql_script = sqlite_file.read()
+
+        self.connect.executescript(sql_script)
+
+    def add_users(self, id_user: str, username: str, last_name: str, first_name: str):
+        try:
+            self.request(
+                f"INSERT INTO users (username, first_name, last_name, id_users) VALUES ("
+                f"'{username}', '{first_name}', '{last_name}', '{id_user}'"
+                f")"
+            )
+        except sqlite3.IntegrityError as error:
+            logger.debug(error)
+            logger.info(f"Пользователь {id_user} уже есть в базе")
 
     def request(self, query):
         self.cursor.execute(query)
