@@ -10,4 +10,21 @@ class DataBaseManager(object):
         self.cursor = self.connect.cursor()
 
     def create_tables(self):
-        pass
+        """
+        CREATE TABLE users
+        """
+        self.request(
+            "CREATE TABLE IF NOT EXISTS users ("
+            "id INTEGER PRIMARY KEY, "
+            "name_users TEXT NOT NULL, "
+            "id_users TEXT NOT NULL)"
+        )
+
+    def request(self, query):
+        self.cursor.execute(query)
+        logger.info(f"execute - {query}")
+        self.connect.commit()
+
+    def __del__(self):
+        logger.info(f"Connect close")
+        self.connect.close()
