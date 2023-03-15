@@ -12,7 +12,6 @@ async def start_command(message: types.Message):
 
 
 async def on_startup(dp):
-    logger.debug('main message')
     db.create_tables()
 
 

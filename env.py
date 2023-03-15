@@ -1,1 +1,6 @@
-TOKEN: str = "5747639353:AAF2vwODHe4fprYcZJ5ogjjcmBGxvPjtAcY"
+from dotenv import dotenv_values
+
+env = dotenv_values(".env")
+
+# TELEGRAM BOT
+TOKEN: str = env["TOKEN"]
