@@ -14,26 +14,27 @@ class DataBaseManager(object):
         CREATE TABLE:
         - users
         """
-        with open('DataBase/sqlite_create_tables.sql', 'r') as sqlite_file:
-            sql_script = sqlite_file.read()
+        self.execute_script("sqlite_create_tables.sql")
 
-        self.connect.executescript(sql_script)
+    def add_user(self, id_user: str, username: str, last_name: str, first_name: str):
+        self.request(
+            f"INSERT INTO users (username, first_name, last_name, id_users) VALUES ("
+            f"'{username}', '{first_name}', '{last_name}', '{id_user}'"
+            f")"
+        )
 
-    def add_users(self, id_user: str, username: str, last_name: str, first_name: str):
-        try:
-            self.request(
-                f"INSERT INTO users (username, first_name, last_name, id_users) VALUES ("
-                f"'{username}', '{first_name}', '{last_name}', '{id_user}'"
-                f")"
-            )
-        except sqlite3.IntegrityError as error:
-            logger.debug(error)
-            logger.info(f"Пользователь {id_user} уже есть в базе")
+    def check_user(self, id_user: str) -> tuple:
+        self.request(f"SELECT id_users from users WHERE id_users = '{id_user}'")
+        return self.cursor.fetchone()
 
-    def request(self, query):
+    def request(self, query: str):
         self.cursor.execute(query)
         logger.info(f"execute - {query}")
         self.connect.commit()
+
+    def execute_script(self, script: str):
+        with open(f'DataBase/{script}', 'r') as sqlite_file:
+            self.connect.executescript(sqlite_file.read())
 
     def __del__(self):
         logger.info(f"Connect close")
