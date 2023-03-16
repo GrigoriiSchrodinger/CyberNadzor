@@ -1,9 +1,12 @@
+import asyncio
+
 from aiogram import types
 from aiogram.utils import executor
 import settings
 from asset.dialogues import start_dialog_not_registered, start_dialog_is_registered
 from asset.text_logo import logo
 from loader import dp, db
+from src.blockchain import BlockChain
 
 logger = settings.setup_custom_logger('root')
 
@@ -24,6 +27,7 @@ async def start_command(message: types.Message):
 
 async def on_startup(dp):
     db.create_tables()
+    asyncio.create_task(BlockChain().check())
 
 
 if __name__ == "__main__":
