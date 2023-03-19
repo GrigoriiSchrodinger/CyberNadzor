@@ -2,6 +2,7 @@ import logging
 import requests
 from requests import Response
 
+
 logger = logging.getLogger('root')
 
 
