@@ -13,6 +13,8 @@ class DataBaseManager(object):
         """
         CREATE TABLE:
         - users
+        - below_track
+        - higher_track
         """
         self.execute_script("sqlite_create_tables.sql")
 
@@ -23,18 +25,20 @@ class DataBaseManager(object):
             f")"
         )
 
-    def check_user(self, id_user: str) -> tuple:
-        self.request(f"SELECT id_users from users WHERE id_users = '{id_user}'")
+    def check_user(self, id_user: str, table: str) -> tuple:
+        self.request(f"SELECT id_users from {table} WHERE id_users = '{id_user}'")
         return self.cursor.fetchone()
 
     def request(self, query: str):
-        self.cursor.execute(query)
         logger.info(f"execute - {query}")
+        self.cursor.execute(query)
         self.connect.commit()
 
     def execute_script(self, script: str):
         with open(f'DataBase/{script}', 'r') as sqlite_file:
-            self.connect.executescript(sqlite_file.read())
+            file = sqlite_file.read()
+            logger.info(f"Execute script - {file}")
+            self.connect.executescript(file)
 
     def __del__(self):
         logger.info(f"Connect close")

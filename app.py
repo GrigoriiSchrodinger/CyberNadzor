@@ -20,7 +20,7 @@ logger = settings.setup_custom_logger('root')
 
 @dp.message_handler(commands=['start'])
 async def start_command(message: types.Message):
-    if db.check_user(message.chat.id) is None:
+    if db.check_user(message.chat.id, "users") is None:
         db.add_user(
             username=message.chat.username,
             last_name=message.chat.last_name,
@@ -39,6 +39,13 @@ async def price_command(message: types.Message):
 
 @dp.message_handler(commands=['track'])
 async def track_command(message: types.Message):
+    if db.check_user(message.chat.id, "users") is None:
+        db.add_user(
+            username=message.chat.username,
+            last_name=message.chat.last_name,
+            first_name=message.chat.first_name,
+            id_user=message.chat.id
+        )
     await message.answer(text="За какой валютой начать следить?", reply_markup=keyboard_tracks())
 
 
@@ -134,18 +141,47 @@ async def send_below(call: types.CallbackQuery, state: FSMContext):
     await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
 
 
+def is_number(stroka: str):
+    try:
+        float(stroka)
+        return True
+    except ValueError:
+        return False
+
+
 @dp.message_handler(state=Tracks.VALUE)
 async def process_next_message(message: types.Message, state: FSMContext):
     data = await state.get_data()
-    if data['track'] == "below":
-        await bot.send_message(
-            message.from_user.id, f"Хорошо, я сообщу тебе когда {data['currency']} будет ниже {message.text}"
-        )
-    elif data['track'] == "higher":
-        await bot.send_message(
-            message.from_user.id, f"Хорошо, я сообщу тебе когда {data['currency']} будет выше {message.text}"
-        )
+    if is_number(message.text):
+        if data['track'] == "below":
+            currency: str = data['currency']
+            if db.check_user(message.from_user.id, "below_track") is None:
+                db.request(
+                    f"INSERT INTO below_track (id_users, '{currency}') VALUES ('{message.from_user.id}', '{message.text}')")
+            else:
+                db.request(
+                    f"UPDATE below_track SET '{currency}'='{message.text}' WHERE id_users='{message.from_user.id}'")
 
+            await bot.send_message(
+                message.from_user.id, f"Хорошо, я сообщу тебе когда {currency} будет ниже {message.text}"
+            )
+
+        elif data['track'] == "higher":
+            currency: str = data['currency']
+            if db.check_user(message.from_user.id, "higher_track") is None:
+                db.request(
+                    f"INSERT INTO higher_track (id_users, '{currency}') VALUES ('{message.from_user.id}', '{message.text}')")
+            else:
+                db.request(
+                    f"UPDATE higher_track SET '{currency}'='{message.text}' WHERE id_users='{message.from_user.id}'")
+
+            await bot.send_message(
+                message.from_user.id, f"Хорошо, я сообщу тебе когда {data['currency']} будет выше {message.text}"
+            )
+    else:
+        await bot.send_message(
+            message.from_user.id, f"Но это же не число, попробуй еще раз"
+        )
     await state.finish()
 
 
