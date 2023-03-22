@@ -2,6 +2,7 @@ import logging
 import requests
 from requests import Response
 
+from src.number_formatting import formatting
 
 logger = logging.getLogger('root')
 
@@ -23,7 +24,7 @@ class BlockChain(BitcoinAPI):
     #         print(x)
     #         await asyncio.sleep(1)
     def get_currency(self, end_point: str) -> str:
-        return "{:,}".format(self.get(end_point).json()["last_trade_price"])
+        return formatting(self.get(end_point).json()["last_trade_price"])
 
     def price_bitcoin(self) -> str:
         return self.get_currency(end_point="/tickers/BTC-USD")

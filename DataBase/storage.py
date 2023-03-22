@@ -20,13 +20,26 @@ class DataBaseManager(object):
 
     def add_user(self, id_user: str, username: str, last_name: str, first_name: str):
         self.request(
-            f"INSERT INTO users (username, first_name, last_name, id_users) VALUES ("
-            f"'{username}', '{first_name}', '{last_name}', '{id_user}'"
-            f")"
+            f"INSERT INTO users (username, first_name, last_name, id_users)"
+            f"VALUES ('{username}', '{first_name}', '{last_name}', '{id_user}')"
+        )
+        self.request(
+            f"INSERT INTO below_track (id_users) VALUES ('{id_user}')"
+        )
+        self.request(
+            f"INSERT INTO higher_track (id_users) VALUES ('{id_user}')"
         )
 
     def check_user(self, id_user: str, table: str) -> tuple:
-        self.request(f"SELECT id_users from {table} WHERE id_users = '{id_user}'")
+        return self.fetchone(f"SELECT id_users from {table} WHERE id_users = '{id_user}'")
+
+    def update_currency(self, table, currency, quantity, id_users):
+        self.request(
+            f"UPDATE '{table}' SET '{currency}'='{quantity}' WHERE id_users='{id_users}'"
+        )
+
+    def fetchone(self, query: str):
+        self.request(query)
         return self.cursor.fetchone()
 
     def request(self, query: str):
