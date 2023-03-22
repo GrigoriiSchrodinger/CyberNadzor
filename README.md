@@ -8,8 +8,8 @@
 - Bitcoin (BTC)
 - Ethereum (ETH)
 - Litecoin (LTC)
-- Dogecoin (DOGE-USD)
-- Cardano (ADA-USD). 
+- Dogecoin (DOGE)
+- Cardano (ADA). 
 
 ---
 
