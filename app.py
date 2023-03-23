@@ -1,4 +1,6 @@
 # import asyncio
+import asyncio
+
 import settings
 
 from aiogram import types, Dispatcher
@@ -11,6 +13,7 @@ from asset.dialogues import (
 from asset.text_logo import logo
 from loader import dispatcher, db
 from handlers import price, track
+from src.racetrack import RaceTrack
 
 # from src.blockchain import BlockChain
 
@@ -38,6 +41,8 @@ async def price_command(message: types.Message):
 
 async def on_startup(dispatcher: Dispatcher):
     db.create_tables()
+
+    asyncio.create_task(RaceTrack().track_crypto())
 
     price.register_message_handler(dispatcher)
     price.register_callback_query_handler(dispatcher)

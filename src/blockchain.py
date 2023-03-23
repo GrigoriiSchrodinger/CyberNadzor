@@ -1,30 +1,30 @@
 import logging
 import requests
-from requests import Response
 
 from src.number_formatting import formatting
 
 logger = logging.getLogger('root')
 
 
-class BitcoinAPI:
+class BitcoinChainAPI:
     def __init__(self):
         self.url: str = "https://api.blockchain.com/v3/exchange"
 
-    def get(self, end_point) -> Response:
-        logger.info(f"Request - {self.url + end_point}")
-        response = requests.get(url=self.url + end_point)
-        logger.info(f"Response {response.status_code} - {response.json()}")
-        return response
+    def get(self, end_point) -> dict | list:
+        url = self.url + end_point
+        logger.info(f"Request - {url}")
+        response = requests.get(url=url)
+        if response.status_code != 200:
+            logger.error(f"Error {response.status_code} - {response.text}")
+            raise Exception("Error fetching data")
+        data = response.json()
+        logger.info(f"Response {response.status_code} - {data}")
+        return data
 
 
-class BlockChain(BitcoinAPI):
-    # async def check(self):
-    #     for x in range(20):
-    #         print(x)
-    #         await asyncio.sleep(1)
+class BlockChainPrice(BitcoinChainAPI):
     def get_currency(self, end_point: str) -> str:
-        return formatting(self.get(end_point).json()["last_trade_price"])
+        return formatting(self.get(end_point)["last_trade_price"])
 
     def price_bitcoin(self) -> str:
         return self.get_currency(end_point="/tickers/BTC-USD")
