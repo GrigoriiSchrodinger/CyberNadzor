@@ -13,9 +13,8 @@ from asset.dialogues import (
 from asset.text_logo import logo
 from loader import dispatcher, db
 from handlers import price, track
-from src.racetrack import RaceTrack
+from src.blockchain import RaceTrack
 
-# from src.blockchain import BlockChain
 
 logger = settings.setup_custom_logger('root')
 
@@ -42,14 +41,13 @@ async def price_command(message: types.Message):
 async def on_startup(dispatcher: Dispatcher):
     db.create_tables()
 
-    asyncio.create_task(RaceTrack().track_crypto())
-
     price.register_message_handler(dispatcher)
     price.register_callback_query_handler(dispatcher)
 
     track.register_message_handler(dispatcher)
     track.register_callback_query_handler(dispatcher)
-    # asyncio.create_task(BlockChain().check())
+
+    # asyncio.create_task(RaceTrack().track_crypto())
 
 
 if __name__ == "__main__":

@@ -1,59 +1,29 @@
 import logging
 import sqlite3
-from typing import List, Any
 
 logger = logging.getLogger('root')
 
 
-class DataBaseManager(object):
+class Sqlite:
     def __init__(self, path):
         self.connect = sqlite3.connect(path)
         self.cursor = self.connect.cursor()
 
-    def create_tables(self) -> None:
-        """
-        CREATE TABLE:
-        - users
-        - below_track
-        - higher_track
-        """
-        self.execute_script("sqlite_create_tables.sql")
-
-    def add_user(self, id_user: str, username: str, last_name: str, first_name: str) -> None:
-        self.request(
-            f"INSERT INTO users (username, first_name, last_name, id_users)"
-            f"VALUES ('{username}', '{first_name}', '{last_name}', '{id_user}')"
-        )
-        self.request(
-            f"INSERT INTO below_track (id_users) VALUES ('{id_user}')"
-        )
-        self.request(
-            f"INSERT INTO higher_track (id_users) VALUES ('{id_user}')"
-        )
-
-    def check_user(self, id_user: str, table: str) -> tuple:
-        return self.fetchone(f"SELECT id_users from {table} WHERE id_users = '{id_user}'")
-
-    def update_currency(self, table, currency, quantity, id_users) -> None:
-        self.request(
-            f"UPDATE '{table}' SET '{currency}'='{quantity}' WHERE id_users='{id_users}'"
-        )
-
-    def fetchone(self, query: str) -> tuple:
-        self.request(query)
-        return self.cursor.fetchone()
-
-    def fetchall(self, query: str) -> list[Any]:
-        self.request(query)
-        return self.cursor.fetchall()
-
-    def request(self, query: str) -> None:
+    def request(self, query: str, parameters: tuple = ()) -> None:
         logger.info(f"execute - {query}")
-        self.cursor.execute(query)
+        self.cursor.execute(query, parameters)
         self.connect.commit()
 
+    def fetchone(self, query: str, parameters: tuple = ()) -> tuple:
+        self.request(query, parameters)
+        return self.cursor.fetchone()
+
+    def fetchall(self, query: str, parameters: tuple = ()) -> list[tuple]:
+        self.request(query, parameters)
+        return self.cursor.fetchall()
+
     def execute_script(self, script: str) -> None:
-        with open(f'DataBase/{script}', 'r') as sqlite_file:
+        with open(f'database/sql_query/{script}', 'r') as sqlite_file:
             file = sqlite_file.read()
             logger.info(f"Execute script - {file}")
             self.connect.executescript(file)
@@ -61,3 +31,76 @@ class DataBaseManager(object):
     def __del__(self) -> None:
         logger.info(f"Connect close")
         self.connect.close()
+
+
+class DataBaseManager(Sqlite):
+    GET_USER_DATA_QUERY: str = """
+        SELECT
+        users.id_users,
+        higher_track.bitcoin,
+        higher_track.ethereum,
+        higher_track.litecoin,
+        higher_track.dogecoin,
+        higher_track.cardano,
+        'higher' AS track_type
+    FROM users INNER JOIN higher_track ON higher_track.id = users.id
+    UNION ALL
+    SELECT
+        users.id_users,
+        below_track.bitcoin,
+        below_track.ethereum,
+        below_track.litecoin,
+        below_track.dogecoin,
+        below_track.cardano,
+        'below' AS track_type
+    FROM users INNER JOIN below_track ON below_track.id = users.id
+    """
+    ADD_USER_TO_USER_QUERY = "INSERT INTO users (username, first_name, last_name, id_users) VALUES (?, ?, ?, ?)"
+    ADD_USER_TO_BELOW_QUERY = "INSERT INTO below_track (id) VALUES ((SELECT id FROM users WHERE id = ?))"
+    ADD_USER_TO_HIGHER_QUERY = "INSERT INTO higher_track (id) VALUES ((SELECT id FROM users WHERE id = ?))"
+    CHECK_USER_QUERY = "SELECT id_users from '{}' WHERE id_users = ?"
+    UPDATE_CURRENCY_QUERY = "UPDATE '{}' SET '{}'='{}' WHERE id=(SELECT id FROM users WHERE id_users = ?)"
+
+    def create_tables(self) -> None:
+        self.execute_script("sqlite_create_tables.sql")
+
+    def add_user(self, id_user: str, username: str, last_name: str, first_name: str) -> None:
+        self.request(self.ADD_USER_TO_USER_QUERY, (username, first_name, last_name, id_user,))
+        self.request(self.ADD_USER_TO_BELOW_QUERY, (id_user,))
+        self.request(self.ADD_USER_TO_HIGHER_QUERY, (id_user,))
+
+    def get_users_data(self):
+        data = {
+            'higher': [],
+            'below': []
+        }
+
+        rows = self.fetchall(self.GET_USER_DATA_QUERY)
+
+        for row in rows:
+            user_data = {
+                'id_user': row[0],
+                'bitcoin': row[1],
+                'ethereum': row[2],
+                'litecoin': row[3],
+                'dogecoin': row[4],
+                'cardano': row[5],
+            }
+
+            if row[6] == 'higher':
+                data['higher'].append(user_data)
+            else:
+                data['below'].append(user_data)
+
+        return data
+
+    def check_user(self, id_user: str, table: str) -> tuple:
+        return self.fetchone(self.CHECK_USER_QUERY.format(table.replace('"', '""')), (id_user,))
+
+    def update_currency(self, table, currency, quantity, id_user) -> None:
+        self.request(self.UPDATE_CURRENCY_QUERY.format(
+            table.replace('"', '""'),
+            currency.replace('"', '""'),
+            quantity.replace('"', '""')),
+            (id_user,)
+        )

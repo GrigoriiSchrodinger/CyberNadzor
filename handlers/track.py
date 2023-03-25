@@ -106,13 +106,13 @@ async def set_currency(message: types.Message, state: FSMContext) -> None:
 
     if is_number(quantity):
         if table == "below":
-            db.update_currency(table="below_track", currency=currency, quantity=quantity, id_users=id_user)
+            db.update_currency(table="below_track", currency=currency, quantity=quantity, id_user=id_user)
             await bot.send_message(
                 id_user, notification_alert.format(currency=currency, quantity=formatting(quantity))
             )
 
         elif table == "higher":
-            db.update_currency(table="higher_track", currency=currency, quantity=quantity, id_users=id_user)
+            db.update_currency(table="higher_track", currency=currency, quantity=quantity, id_user=id_user)
             await bot.send_message(
                 id_user, notification_alert.format(currency=currency, quantity=formatting(quantity))
             )

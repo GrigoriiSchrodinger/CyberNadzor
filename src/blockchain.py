@@ -1,4 +1,6 @@
+import asyncio
 import logging
+
 import requests
 
 from src.number_formatting import formatting
@@ -40,3 +42,14 @@ class BlockChainPrice(BitcoinChainAPI):
 
     def price_cardano(self) -> str:
         return self.get_currency(end_point="/tickers/ADA-USD")
+
+
+class RaceTrack(BlockChainPrice):
+    async def track_crypto(self):
+        from loader import db
+        # tickers = self.get(end_point="/tickers")
+        # for ticker in tickers:
+        #     await asyncio.sleep(1)
+        #     print(ticker)
+        date = db.get_users_data()
+        print(date)
