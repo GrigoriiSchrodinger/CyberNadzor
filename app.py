@@ -11,8 +11,8 @@ from asset.dialogues import (
     help_dialog
 )
 from asset.text_logo import logo
-from loader import dispatcher, db
-from src.handlers import track, price
+from src.loader import dispatcher, db
+from bot.handlers import track, price
 from src.blockchain import RaceTrack
 
 

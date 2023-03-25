@@ -1,7 +1,7 @@
 from aiogram import types, Dispatcher
 from asset.dialogues import price_dialog, specify_currency_price
-from src.keyboards.inline.currency import keyboard_price
-from loader import blockchain, bot
+from bot.keyboards.inline.currency import keyboard_price
+from src.loader import blockchain, bot
 
 
 def register_message_handler(dispatcher: Dispatcher):

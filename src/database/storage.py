@@ -23,7 +23,7 @@ class Sqlite:
         return self.cursor.fetchall()
 
     def execute_script(self, script: str) -> None:
-        with open(f'database/sql_query/{script}', 'r') as sqlite_file:
+        with open(f'src/database/sql_query/{script}', 'r') as sqlite_file:
             file = sqlite_file.read()
             logger.info(f"Execute script - {file}")
             self.connect.executescript(file)

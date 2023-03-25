@@ -8,11 +8,11 @@ from asset.dialogues import (
     tracks_dialog, indicate_price, specify_currency_track,
     notification_alert, only_numbers, again
 )
-from src.keyboards.inline.currency import keyboard_tracks
-from src.keyboards.inline.tracks_inline import keyboard_traces
-from loader import db, bot
+from bot.keyboards.inline.currency import keyboard_tracks
+from bot.keyboards.inline.tracks_inline import keyboard_traces
+from src.loader import db, bot
 from src.number_formatting import formatting
-from src.states.tracks import Tracks
+from bot.states.tracks import Tracks
 
 # KEYBOARDS
 keyboard_traces: InlineKeyboardMarkup = keyboard_traces()

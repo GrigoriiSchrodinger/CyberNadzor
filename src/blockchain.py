@@ -1,4 +1,3 @@
-import asyncio
 import logging
 
 import requests
@@ -46,7 +45,7 @@ class BlockChainPrice(BitcoinChainAPI):
 
 class RaceTrack(BlockChainPrice):
     async def track_crypto(self):
-        from loader import db
+        from src.loader import db
         # tickers = self.get(end_point="/tickers")
         # for ticker in tickers:
         #     await asyncio.sleep(1)
