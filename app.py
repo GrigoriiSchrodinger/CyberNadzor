@@ -12,7 +12,7 @@ from asset.dialogues import (
 )
 from asset.text_logo import logo
 from loader import dispatcher, db
-from handlers import price, track
+from src.handlers import track, price
 from src.blockchain import RaceTrack
 
 
@@ -47,7 +47,7 @@ async def on_startup(dispatcher: Dispatcher):
     track.register_message_handler(dispatcher)
     track.register_callback_query_handler(dispatcher)
 
-    # asyncio.create_task(RaceTrack().track_crypto())
+    asyncio.create_task(RaceTrack().track_crypto())
 
 
 if __name__ == "__main__":

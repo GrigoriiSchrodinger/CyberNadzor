@@ -1,6 +1,6 @@
 from aiogram import types, Dispatcher
 from asset.dialogues import price_dialog, specify_currency_price
-from keyboards.inline.currency import keyboard_price
+from src.keyboards.inline.currency import keyboard_price
 from loader import blockchain, bot
 
 
