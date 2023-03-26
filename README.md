@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="asset/new_logo.jpeg" alt="Bitcoin" width="600" height="600">
+    <img src="asset/new_logo.jpeg" alt="Bitcoin">
 </div>
 
 
