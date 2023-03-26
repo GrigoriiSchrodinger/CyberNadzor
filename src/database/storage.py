@@ -80,11 +80,11 @@ class DataBaseManager(Sqlite):
         for row in rows:
             user_data = {
                 'id_user': row[0],
-                'bitcoin': row[1],
-                'ethereum': row[2],
-                'litecoin': row[3],
-                'dogecoin': row[4],
-                'cardano': row[5],
+                'BTC-USD': row[1],
+                'ETH-USD': row[2],
+                'LTC-USD': row[3],
+                'DOGE-USD': row[4],
+                'ADA-USD': row[5],
             }
 
             if row[6] == 'higher':

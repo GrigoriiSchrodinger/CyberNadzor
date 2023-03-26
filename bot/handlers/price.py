@@ -1,5 +1,7 @@
+import random
+
 from aiogram import types, Dispatcher
-from asset.dialogues import price_dialog, specify_currency_price
+from asset.dialogues import price_dialog, specify_currency_price, buzcoin_dialog
 from bot.keyboards.inline.currency import keyboard_price
 from src.loader import blockchain, bot
 
@@ -24,6 +26,7 @@ def register_callback_query_handler(dispatcher: Dispatcher) -> None:
     dispatcher.register_callback_query_handler(callback=send_price_litecoin, text="litecoin_price")
     dispatcher.register_callback_query_handler(callback=send_price_dogecoin, text="dogecoin_price")
     dispatcher.register_callback_query_handler(callback=send_price_cardano, text="cardano_price")
+    dispatcher.register_callback_query_handler(callback=send_price_buzcoin, text="buzcoin_price")
 
 
 async def price_command(message: types.Message) -> None:
@@ -51,5 +54,10 @@ async def send_price_dogecoin(call: types.CallbackQuery) -> None:
 
 
 async def send_price_cardano(call: types.CallbackQuery) -> None:
-    await call.message.answer(text=price_dialog.format(currency="Dogecoin", price=blockchain.price_cardano()))
+    await call.message.answer(text=price_dialog.format(currency="Cardano", price=blockchain.price_cardano()))
+    await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
+
+
+async def send_price_buzcoin(call: types.CallbackQuery) -> None:
+    await call.message.answer(text=random.choice(buzcoin_dialog))
     await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)

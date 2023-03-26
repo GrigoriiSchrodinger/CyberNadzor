@@ -1,7 +1,10 @@
+import asyncio
 import logging
 
 import requests
 
+from bot.send.below import send_message_below
+from bot.send.higher import send_message_higher
 from src.number_formatting import formatting
 
 logger = logging.getLogger('root')
@@ -46,9 +49,31 @@ class BlockChainPrice(BitcoinChainAPI):
 class RaceTrack(BlockChainPrice):
     async def track_crypto(self):
         from src.loader import db
-        # tickers = self.get(end_point="/tickers")
-        # for ticker in tickers:
-        #     await asyncio.sleep(1)
-        #     print(ticker)
-        date = db.get_users_data()
-        print(date)
+
+        currency = ["BTC-USD", "ETH-USD", "LTC-USD", "DOGE-USD", "ADA-USD"]
+        currency_data = [
+            {"currency": ticker["symbol"], "price": ticker["last_trade_price"]}
+            for ticker in self.get(end_point="/tickers") if ticker["symbol"] in currency
+        ]
+
+        users_data = db.get_users_data()
+        users_data_higher = users_data["higher"]
+        users_data_below = users_data["below"]
+
+        for user_data in users_data_higher:
+            for currency in currency_data:
+                if user_data.get(currency["currency"]) and currency["price"] >= user_data[currency["currency"]]:
+                    await send_message_higher(
+                        id_user=user_data["id_user"],
+                        currency=currency["currency"],
+                        price_currency=user_data[currency["currency"]]
+                    )
+
+        for user_data in users_data_below:
+            for currency in currency_data:
+                if user_data.get(currency["currency"]) and currency["price"] <= user_data[currency["currency"]]:
+                    await send_message_below(
+                        id_user=user_data["id_user"],
+                        currency=currency["currency"],
+                        price_currency=user_data[currency["currency"]]
+                    )

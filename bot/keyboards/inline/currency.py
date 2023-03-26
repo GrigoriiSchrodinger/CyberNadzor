@@ -7,6 +7,7 @@ def keyboard_price():
     litecoin_button = InlineKeyboardButton("Litecoin", callback_data="litecoin_price")
     dogecoin_button = InlineKeyboardButton("Dogecoin", callback_data="dogecoin_price")
     cardano_button = InlineKeyboardButton("Cardano", callback_data="cardano_price")
+    buzcoin_button = InlineKeyboardButton("BUZCOIN", callback_data="buzcoin_price")
 
     keyboard = InlineKeyboardMarkup().add(
         bitcoin_button,
@@ -14,6 +15,7 @@ def keyboard_price():
         litecoin_button,
         dogecoin_button,
         cardano_button,
+        buzcoin_button,
     )
 
     return keyboard
