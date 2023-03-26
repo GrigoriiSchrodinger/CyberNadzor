@@ -37,21 +37,21 @@ class DataBaseManager(Sqlite):
     GET_USER_DATA_QUERY: str = """
         SELECT
         users.id_users,
-        higher_track.bitcoin,
-        higher_track.ethereum,
-        higher_track.litecoin,
-        higher_track.dogecoin,
-        higher_track.cardano,
+        higher_track.'BTC-USD',
+        higher_track.'ETH-USD',
+        higher_track.'LTC-USD',
+        higher_track.'DOGE-USD',
+        higher_track.'ADA-USD',
         'higher' AS track_type
     FROM users INNER JOIN higher_track ON higher_track.id = users.id
     UNION ALL
     SELECT
         users.id_users,
-        below_track.bitcoin,
-        below_track.ethereum,
-        below_track.litecoin,
-        below_track.dogecoin,
-        below_track.cardano,
+        below_track.'BTC-USD',
+        below_track.'ETH-USD',
+        below_track.'LTC-USD',
+        below_track.'DOGE-USD',
+        below_track.'ADA-USD',
         'below' AS track_type
     FROM users INNER JOIN below_track ON below_track.id = users.id
     """
@@ -60,6 +60,7 @@ class DataBaseManager(Sqlite):
     ADD_USER_TO_HIGHER_QUERY = "INSERT INTO higher_track (id) VALUES ((SELECT id FROM users WHERE id = ?))"
     CHECK_USER_QUERY = "SELECT id_users from '{}' WHERE id_users = ?"
     UPDATE_CURRENCY_QUERY = "UPDATE '{}' SET '{}'='{}' WHERE id=(SELECT id FROM users WHERE id_users = ?)"
+    DELETE_CURRENCY_QUERY = "UPDATE '{}' SET '{}'=NULL WHERE id=(SELECT id FROM users WHERE id_users = ?)"
 
     def create_tables(self) -> None:
         self.execute_script("sqlite_create_tables.sql")
@@ -76,7 +77,6 @@ class DataBaseManager(Sqlite):
         }
 
         rows = self.fetchall(self.GET_USER_DATA_QUERY)
-
         for row in rows:
             user_data = {
                 'id_user': row[0],
@@ -102,5 +102,12 @@ class DataBaseManager(Sqlite):
             table.replace('"', '""'),
             currency.replace('"', '""'),
             quantity.replace('"', '""')),
+            (id_user,)
+        )
+
+    def delete_currency(self, table, currency, id_user) -> None:
+        self.request(self.DELETE_CURRENCY_QUERY.format(
+            table.replace('"', '""'),
+            currency.replace('"', '""')),
             (id_user,)
         )

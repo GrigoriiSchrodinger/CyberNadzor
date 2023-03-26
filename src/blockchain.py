@@ -51,29 +51,40 @@ class RaceTrack(BlockChainPrice):
         from src.loader import db
 
         currency = ["BTC-USD", "ETH-USD", "LTC-USD", "DOGE-USD", "ADA-USD"]
-        currency_data = [
-            {"currency": ticker["symbol"], "price": ticker["last_trade_price"]}
-            for ticker in self.get(end_point="/tickers") if ticker["symbol"] in currency
-        ]
+        while True:
+            currency_data = [
+                {"currency": ticker["symbol"], "price": ticker["last_trade_price"]}
+                for ticker in self.get(end_point="/tickers")
+                if ticker["symbol"] in currency
+            ]
 
-        users_data = db.get_users_data()
-        users_data_higher = users_data["higher"]
-        users_data_below = users_data["below"]
+            users_data = db.get_users_data()
 
-        for user_data in users_data_higher:
-            for currency in currency_data:
-                if user_data.get(currency["currency"]) and currency["price"] >= user_data[currency["currency"]]:
-                    await send_message_higher(
-                        id_user=user_data["id_user"],
-                        currency=currency["currency"],
-                        price_currency=user_data[currency["currency"]]
-                    )
+            users_data_higher = users_data["higher"]
+            users_data_below = users_data["below"]
 
-        for user_data in users_data_below:
-            for currency in currency_data:
-                if user_data.get(currency["currency"]) and currency["price"] <= user_data[currency["currency"]]:
-                    await send_message_below(
-                        id_user=user_data["id_user"],
-                        currency=currency["currency"],
-                        price_currency=user_data[currency["currency"]]
-                    )
+            for user_data in users_data_higher:
+                for user_currency in currency_data:
+                    if user_data.get(user_currency["currency"]) and user_currency["price"] >= user_data[user_currency["currency"]]:
+                        await send_message_higher(
+                            id_user=user_data["id_user"],
+                            currency=user_currency["currency"],
+                            price_currency=user_data[user_currency["currency"]]
+                        )
+                        db.delete_currency(
+                            table="higher_track", currency=user_currency["currency"], id_user=user_data["id_user"]
+                        )
+
+            for user_data in users_data_below:
+                for user_currency in currency_data:
+                    if user_data.get(user_currency["currency"]) and user_currency["price"] <= user_data[user_currency["currency"]]:
+                        await send_message_below(
+                            id_user=user_data["id_user"],
+                            currency=user_currency["currency"],
+                            price_currency=user_data[user_currency["currency"]]
+                        )
+                        db.delete_currency(
+                            table="below_track", currency=user_currency["currency"], id_user=user_data["id_user"]
+                        )
+            await asyncio.sleep(30)
+

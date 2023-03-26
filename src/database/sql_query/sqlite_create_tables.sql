@@ -8,20 +8,20 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS below_track (
     id INTEGER PRIMARY KEY,
-    bitcoin INTEGER,
-    ethereum INTEGER,
-    litecoin INTEGER,
-    dogecoin INTEGER,
-    cardano INTEGER,
+    'BTC-USD' INTEGER,
+    'ETH-USD' INTEGER,
+    'LTC-USD' INTEGER,
+    'DOGE-USD' INTEGER,
+    'ADA-USD' INTEGER,
     FOREIGN KEY (id) REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS higher_track (
     id INTEGER PRIMARY KEY,
-    bitcoin INTEGER,
-    ethereum INTEGER,
-    litecoin INTEGER,
-    dogecoin INTEGER,
-    cardano INTEGER,
+   'BTC-USD' INTEGER,
+   'ETH-USD' INTEGER,
+   'LTC-USD' INTEGER,
+   'DOGE-USD' INTEGER,
+   'ADA-USD' INTEGER,
     FOREIGN KEY (id) REFERENCES users(id)
 );

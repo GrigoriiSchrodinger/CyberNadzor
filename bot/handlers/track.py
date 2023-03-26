@@ -55,31 +55,31 @@ async def track_command(message: types.Message) -> None:
 
 async def send_track_bitcoin(call: types.CallbackQuery, state: FSMContext) -> None:
     await call.message.answer(text=tracks_dialog.format(currency="bitcoin"), reply_markup=keyboard_traces)
-    await state.update_data(currency="bitcoin")
+    await state.update_data(currency="BTC-USD")
     await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
 
 
 async def send_track_ethereum(call: types.CallbackQuery, state: FSMContext) -> None:
     await call.message.answer(text=tracks_dialog.format(currency="ethereum"), reply_markup=keyboard_traces)
-    await state.update_data(currency="ethereum")
+    await state.update_data(currency="ETH-USD")
     await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
 
 
 async def send_track_litecoin(call: types.CallbackQuery, state: FSMContext) -> None:
     await call.message.answer(text=tracks_dialog.format(currency="litecoin"), reply_markup=keyboard_traces)
-    await state.update_data(currency="litecoin")
+    await state.update_data(currency="LTC-USD")
     await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
 
 
 async def send_track_dogecoin(call: types.CallbackQuery, state: FSMContext) -> None:
     await call.message.answer(text=tracks_dialog.format(currency="dogecoin"), reply_markup=keyboard_traces)
-    await state.update_data(currency="dogecoin")
+    await state.update_data(currency="DOGE-USD")
     await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
 
 
 async def send_track_cardano(call: types.CallbackQuery, state: FSMContext) -> None:
     await call.message.answer(text=tracks_dialog.format(currency="cardano"), reply_markup=keyboard_traces)
-    await state.update_data(currency="cardano")
+    await state.update_data(currency="ADA-USD")
     await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
 
 
