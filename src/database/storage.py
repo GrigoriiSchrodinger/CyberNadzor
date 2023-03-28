@@ -101,7 +101,7 @@ class DataBaseManager(Sqlite):
         self.request(self.UPDATE_CURRENCY_QUERY.format(
             table.replace('"', '""'),
             currency.replace('"', '""'),
-            quantity.replace('"', '""')),
+            quantity),
             (id_user,)
         )
 

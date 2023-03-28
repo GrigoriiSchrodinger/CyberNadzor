@@ -48,7 +48,8 @@ indicate_price: str = (
 )
 tracks_dialog: str = "Сообщить когда {currency} будет..."
 specify_currency_track: str = "Пожалуйста, укажите название валюты, за которой Вы хотите начать следить."
-notification_alert: str = "Хорошо, я сообщу Вам когда {currency} будет ниже {quantity}$"
+notification_alert_higher: str = "Хорошо, я сообщу Вам когда {currency} будет выше {quantity}$"
+notification_alert_below: str = "Хорошо, я сообщу Вам когда {currency} будет ниже {quantity}$"
 only_numbers: str = "Извини, какой-то странный формат, не могу его обработать."
 again: str = "Еще раз? /track"
 currency_higher: list = [

@@ -2,7 +2,7 @@ import random
 
 from aiogram import types, Dispatcher
 
-from bot.send.higher import send_message_higher
+from src.bot.send.higher import send_message_higher
 
 
 def register_message_handler(dispatcher: Dispatcher):

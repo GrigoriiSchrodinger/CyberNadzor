@@ -6,13 +6,13 @@ from aiogram.types import InlineKeyboardMarkup
 
 from asset.dialogues import (
     tracks_dialog, indicate_price, specify_currency_track,
-    notification_alert, only_numbers, again
+    only_numbers, again, notification_alert_below, notification_alert_higher
 )
-from bot.keyboards.inline.currency import keyboard_tracks
-from bot.keyboards.inline.tracks_inline import keyboard_traces
+from src.bot.keyboards.inline.currency import keyboard_tracks
+from src.bot.keyboards.inline.tracks_inline import keyboard_traces
 from src.loader import db, bot
 from src.number_formatting import formatting
-from bot.states.tracks import Tracks
+from src.bot.states.tracks import Tracks
 
 # KEYBOARDS
 keyboard_traces: InlineKeyboardMarkup = keyboard_traces()
@@ -106,15 +106,15 @@ async def set_currency(message: types.Message, state: FSMContext) -> None:
 
     if is_number(quantity):
         if table == "below":
-            db.update_currency(table="below_track", currency=currency, quantity=quantity, id_user=id_user)
+            db.update_currency(table="below_track", currency=currency, quantity=float(quantity.replace(',', '')), id_user=id_user)
             await bot.send_message(
-                id_user, notification_alert.format(currency=currency, quantity=formatting(quantity))
+                id_user, notification_alert_below.format(currency=currency, quantity=formatting(quantity))
             )
 
         elif table == "higher":
-            db.update_currency(table="higher_track", currency=currency, quantity=quantity, id_user=id_user)
+            db.update_currency(table="higher_track", currency=currency, quantity=float(quantity.replace(',', '')), id_user=id_user)
             await bot.send_message(
-                id_user, notification_alert.format(currency=currency, quantity=formatting(quantity))
+                id_user, notification_alert_higher.format(currency=currency, quantity=formatting(quantity))
             )
     else:
         await bot.send_message(

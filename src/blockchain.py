@@ -3,8 +3,8 @@ import logging
 
 import requests
 
-from bot.send.below import send_message_below
-from bot.send.higher import send_message_higher
+from src.bot.send.below import send_message_below
+from src.bot.send.higher import send_message_higher
 from src.number_formatting import formatting
 
 logger = logging.getLogger('root')
@@ -65,7 +65,7 @@ class RaceTrack(BlockChainPrice):
 
             for user_data in users_data_higher:
                 for user_currency in currency_data:
-                    if user_data.get(user_currency["currency"]) and user_currency["price"] >= user_data[user_currency["currency"]]:
+                    if user_data.get(user_currency["currency"]) and float(user_currency["price"]) >= float(user_data[user_currency["currency"]]):
                         await send_message_higher(
                             id_user=user_data["id_user"],
                             currency=user_currency["currency"],
@@ -77,7 +77,7 @@ class RaceTrack(BlockChainPrice):
 
             for user_data in users_data_below:
                 for user_currency in currency_data:
-                    if user_data.get(user_currency["currency"]) and user_currency["price"] <= user_data[user_currency["currency"]]:
+                    if user_data.get(user_currency["currency"]) and float(user_currency["price"]) <= float(user_data[user_currency["currency"]]):
                         await send_message_below(
                             id_user=user_data["id_user"],
                             currency=user_currency["currency"],
@@ -86,5 +86,4 @@ class RaceTrack(BlockChainPrice):
                         db.delete_currency(
                             table="below_track", currency=user_currency["currency"], id_user=user_data["id_user"]
                         )
-            await asyncio.sleep(30)
-
+            await asyncio.sleep(60)

@@ -1,5 +1,5 @@
 import asyncio
-import settings
+import setup
 
 from aiogram import types, Dispatcher
 from aiogram.utils import executor
@@ -10,11 +10,11 @@ from asset.dialogues import (
 )
 from asset.text_logo import logo
 from src.loader import dispatcher, db
-from bot.handlers import track, price, test_alert
+from src.bot.handlers import track, test_alert, price
 from src.blockchain import RaceTrack
 
 
-logger = settings.setup_custom_logger('root')
+logger = setup.setup_custom_logger('root')
 
 
 @dispatcher.message_handler(commands=['start'])
