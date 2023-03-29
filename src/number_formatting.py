@@ -2,6 +2,7 @@ import re
 
 
 def formatting(number):
+    # TODO сдедать форматирование 27,5 >> 27,500
     if isinstance(number, float):
         return '{:,.2f}'.format(number)
 
