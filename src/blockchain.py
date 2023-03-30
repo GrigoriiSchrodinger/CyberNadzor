@@ -14,6 +14,24 @@ class BitcoinChainAPI:
     def __init__(self):
         self.url: str = "https://api.blockchain.com/v3/exchange"
 
+    def end_point_bitcoin(self) -> str:
+        return self.url + "/tickers/BTC-USD"
+
+    def end_point_ethereum(self) -> str:
+        return self.url + "/tickers/ETH-USD"
+
+    def end_point_litecoin(self) -> str:
+        return self.url + "/tickers/LTC-USD"
+
+    def end_point_dogecoin(self) -> str:
+        return self.url + "/tickers/DOGE-USD"
+
+    def end_point_cardano(self) -> str:
+        return self.url + "/tickers/ADA-USD"
+
+    def end_point_all(self) -> str:
+        return self.url + "/tickers"
+
     def get(self, end_point) -> dict | list:
         url = self.url + end_point
         logger.info(f"Request - {url}")
@@ -46,7 +64,7 @@ class BlockChainPrice(BitcoinChainAPI):
         return self.get_currency(end_point="/tickers/ADA-USD")
 
 
-class RaceTrack(BlockChainPrice):
+class RaceTrack(BitcoinChainAPI):
     async def track_crypto(self):
         from src.loader import db
 
