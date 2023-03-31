@@ -16,5 +16,6 @@ async def send_message_higher(id_user, price_currency, currency):
 
     if currency in messages:
         await bot.send_message(
-            id_user, random.choice(currency_higher).format(currency=messages[currency], price=formatting(price_currency))
+            id_user,
+            random.choice(currency_higher).format(currency=messages[currency], price=formatting(price_currency))
         )

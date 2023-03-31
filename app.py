@@ -11,7 +11,7 @@ from asset.dialogues import (
 from asset.text_logo import logo
 from src.loader import dispatcher, db
 from src.bot.handlers import track, test_alert, price
-from src.blockchain import RaceTrack
+from src.blockchain import BlockChainRaceTrack
 
 
 logger = setup.setup_custom_logger('root')
@@ -47,7 +47,7 @@ async def on_startup(dispatcher: Dispatcher):
 
     test_alert.register_message_handler(dispatcher)
 
-    asyncio.create_task(RaceTrack().track_crypto())
+    asyncio.create_task(BlockChainRaceTrack().track_crypto())
 
 
 if __name__ == "__main__":
