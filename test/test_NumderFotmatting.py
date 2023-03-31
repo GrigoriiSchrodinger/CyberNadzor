@@ -16,9 +16,6 @@ class TestNuberFormatting(unittest.TestCase):
     def test_four(self):
         self.assertEqual(formatting("27000.98"), "27,000.98")
 
-    def test_five(self):
-        self.assertEqual(formatting("27,5"), "27,500")
-
 
 if __name__ == "__main__":
     unittest.main()

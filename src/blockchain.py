@@ -54,7 +54,7 @@ class BlockChainPrice(BlockChainAPI):
     def price_cardano(self) -> str:
         return self.get_price(end_point=self.cardano)
 
-    def price_all(self):
+    def price_all(self) -> list:
         return self.get(end_point=self.all)
 
 
@@ -85,7 +85,7 @@ class BlockChainRaceTrack(BlockChainPrice):
         ]
         return currency_data
 
-    async def notify_users(self, users_data_higher, users_data_below, currency_data):
+    async def notify_users(self, users_data_higher, users_data_below, currency_data) -> None:
         for user_data in users_data_higher:
             for user_currency in currency_data:
                 if user_data.get(user_currency["currency"]) and float(user_currency["price"]) >= float(
