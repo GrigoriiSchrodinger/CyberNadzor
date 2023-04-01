@@ -22,7 +22,7 @@ class EndPoints:
 
 
 class BlockChainAPI(EndPoints):
-    def get(self, end_point) -> list | dict:
+    def get(self, end_point):
         url = self.base_url + end_point
         logger.info(f"Request - {url}")
         response = requests.get(url=url)
