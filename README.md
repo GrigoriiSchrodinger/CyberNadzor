@@ -4,7 +4,7 @@
 
 
 # CyberNadzor 🤖
-Бот CyberNadzor предназначен для отслеживания цен на шесть криптовалют: 
+The CyberNadzor bot is designed to track the prices of six cryptocurrencies:
 - Bitcoin (BTC)
 - Ethereum (ETH)
 - Litecoin (LTC)
@@ -13,25 +13,26 @@
 
 ---
 
-## Возможности бота 😎
-- Вывод актуальных цен на указанные криптовалюты в режиме реального времени
-- Уведомление пользователя, когда цена криптовалюты достигает указанного порога
+## Bot features 😎
+- Displaying the current prices for the specified cryptocurrencies in real time
+- Notifying the user when the price of a cryptocurrency reaches a specified threshold
 
 ---
 
-## Как использовать бота 💻
-Для использования бота CyberNadzor необходимо:
+## How to use the bot 💻
+To use the CyberNadzor bot, you must:
 
-1. Запустить бота в телеграмме по его никнейму [@CyberNadzor_bot](https://t.me/CyberNadzorBot)
-2. Ввести команду `/start`
-3. Воспользоваться доступными командами бота:
+1. Launch a bot in a telegram using its nickname [@CyberNadzor_bot](https://t.me/CyberNadzorBot)
+2. Enter the command `/start`
+3. Use the available bot commands:
 
-- `/price` - получить актуальные цены на криптовалюты
-- `/track` - установить пороговую цену для криптовалюты, для уведомлений.
-
+- `/price` - get current prices for cryptocurrencies
+- `/track` - set the threshold price for cryptocurrency, for notifications.
 ---
 
-## Установка пороговой цены 🤔
-Для установки пороговой цены необходимо ввести команду `/track` и выбрать криптовалюту, для которой необходимо установить пороговую цену. Затем нужно ввести желаемую пороговую цену для этой криптовалюты. Когда цена криптовалюты достигнет установленной пороговой цены, бот CyberNadzor уведомит пользователя о достижении этой цены.
+## Setting a threshold price 🤔
+To set a threshold price, you must enter the `/track` command and select the cryptocurrency for which you need to
+set a threshold price. Then you need to enter the desired threshold price for this cryptocurrency. When the price of a cryptocurrency
+reaches the set threshold price, the CyberNadzor bot will notify the user that this price has been reached.
 
 ---
