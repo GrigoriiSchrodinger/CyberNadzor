@@ -4,7 +4,59 @@ import sqlite3
 logger = logging.getLogger('root')
 
 
-class Sqlite:
+class RequestsSql:
+    GET_USER_DATA_QUERY: str = """
+        SELECT
+        users.id_users,
+        higher_track.'BTC-USD',
+        higher_track.'ETH-USD',
+        higher_track.'LTC-USD',
+        higher_track.'DOGE-USD',
+        higher_track.'ADA-USD',
+        'higher' AS track_type
+    FROM users INNER JOIN higher_track ON higher_track.id = '{}'
+    UNION ALL
+    SELECT
+        users.id_users,
+        below_track.'BTC-USD',
+        below_track.'ETH-USD',
+        below_track.'LTC-USD',
+        below_track.'DOGE-USD',
+        below_track.'ADA-USD',
+        'below' AS track_type
+    FROM users INNER JOIN below_track ON below_track.id = '{}'
+    """
+
+    GET_USERS_DATA_QUERY: str = """
+          SELECT
+          users.id_users,
+          higher_track.'BTC-USD',
+          higher_track.'ETH-USD',
+          higher_track.'LTC-USD',
+          higher_track.'DOGE-USD',
+          higher_track.'ADA-USD',
+          'higher' AS track_type
+      FROM users INNER JOIN higher_track ON higher_track.id = users.id
+      UNION ALL
+      SELECT
+          users.id_users,
+          below_track.'BTC-USD',
+          below_track.'ETH-USD',
+          below_track.'LTC-USD',
+          below_track.'DOGE-USD',
+          below_track.'ADA-USD',
+          'below' AS track_type
+      FROM users INNER JOIN below_track ON below_track.id = users.id
+      """
+    ADD_USER_TO_USER_QUERY = "INSERT INTO users (username, first_name, last_name, id_users) VALUES (?, ?, ?, ?)"
+    ADD_USER_TO_BELOW_QUERY = "INSERT INTO below_track (id) VALUES ((SELECT id FROM users WHERE id = ?))"
+    ADD_USER_TO_HIGHER_QUERY = "INSERT INTO higher_track (id) VALUES ((SELECT id FROM users WHERE id = ?))"
+    CHECK_USER_QUERY = "SELECT id_users from '{}' WHERE id_users = ?"
+    UPDATE_CURRENCY_QUERY = "UPDATE '{}' SET '{}'='{}' WHERE id=(SELECT id FROM users WHERE id_users = ?)"
+    DELETE_CURRENCY_QUERY = "UPDATE '{}' SET '{}'=NULL WHERE id=(SELECT id FROM users WHERE id_users = ?)"
+
+
+class Sqlite(RequestsSql):
     def __init__(self, path):
         self.connect = sqlite3.connect(path)
         self.cursor = self.connect.cursor()
@@ -34,34 +86,6 @@ class Sqlite:
 
 
 class DataBaseManager(Sqlite):
-    GET_USER_DATA_QUERY: str = """
-        SELECT
-        users.id_users,
-        higher_track.'BTC-USD',
-        higher_track.'ETH-USD',
-        higher_track.'LTC-USD',
-        higher_track.'DOGE-USD',
-        higher_track.'ADA-USD',
-        'higher' AS track_type
-    FROM users INNER JOIN higher_track ON higher_track.id = users.id
-    UNION ALL
-    SELECT
-        users.id_users,
-        below_track.'BTC-USD',
-        below_track.'ETH-USD',
-        below_track.'LTC-USD',
-        below_track.'DOGE-USD',
-        below_track.'ADA-USD',
-        'below' AS track_type
-    FROM users INNER JOIN below_track ON below_track.id = users.id
-    """
-    ADD_USER_TO_USER_QUERY = "INSERT INTO users (username, first_name, last_name, id_users) VALUES (?, ?, ?, ?)"
-    ADD_USER_TO_BELOW_QUERY = "INSERT INTO below_track (id) VALUES ((SELECT id FROM users WHERE id = ?))"
-    ADD_USER_TO_HIGHER_QUERY = "INSERT INTO higher_track (id) VALUES ((SELECT id FROM users WHERE id = ?))"
-    CHECK_USER_QUERY = "SELECT id_users from '{}' WHERE id_users = ?"
-    UPDATE_CURRENCY_QUERY = "UPDATE '{}' SET '{}'='{}' WHERE id=(SELECT id FROM users WHERE id_users = ?)"
-    DELETE_CURRENCY_QUERY = "UPDATE '{}' SET '{}'=NULL WHERE id=(SELECT id FROM users WHERE id_users = ?)"
-
     def create_tables(self) -> None:
         self.execute_script("sqlite_create_tables.sql")
 
@@ -70,13 +94,37 @@ class DataBaseManager(Sqlite):
         self.request(self.ADD_USER_TO_BELOW_QUERY, (id_user,))
         self.request(self.ADD_USER_TO_HIGHER_QUERY, (id_user,))
 
-    def get_users_data(self):
+    def get_users_data(self) -> dict:
         data = {
             'higher': [],
             'below': []
         }
 
-        rows = self.fetchall(self.GET_USER_DATA_QUERY)
+        rows = self.fetchall(self.GET_USERS_DATA_QUERY)
+        for row in rows:
+            user_data = {
+                'id_user': row[0],
+                'BTC-USD': row[1],
+                'ETH-USD': row[2],
+                'LTC-USD': row[3],
+                'DOGE-USD': row[4],
+                'ADA-USD': row[5],
+            }
+
+            if row[6] == 'higher':
+                data['higher'].append(user_data)
+            else:
+                data['below'].append(user_data)
+
+        return data
+
+    def get_user_data(self, id_user) -> dict:
+        data = {
+            'higher': [],
+            'below': []
+        }
+
+        rows = self.fetchone(self.GET_USER_DATA_QUERY.format(id_user))
         for row in rows:
             user_data = {
                 'id_user': row[0],

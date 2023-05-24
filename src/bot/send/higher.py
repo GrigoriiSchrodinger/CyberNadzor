@@ -1,11 +1,11 @@
 import random
 
-from asset.dialogues import currency_higher
-from src.number_formatting import formatting
+from src.asset.dialogues import currency_higher
+from src.utils.number_formatting import formatting
 
 
 async def send_message_higher(id_user, price_currency, currency):
-    from src.loader import bot
+    from src.utils.loader import bot
     messages = {
         "BTC-USD": "Bitcoin",
         "ETH-USD": "Ethereum",

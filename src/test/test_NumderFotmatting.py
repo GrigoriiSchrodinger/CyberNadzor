@@ -1,6 +1,6 @@
 import unittest
 
-from src.number_formatting import formatting
+from src.utils.number_formatting import formatting
 
 
 class TestNuberFormatting(unittest.TestCase):

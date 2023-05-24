@@ -1,16 +1,16 @@
 import asyncio
-import setup
+from src.utils import setup
 
 from aiogram import types, Dispatcher
 from aiogram.utils import executor
-from asset.dialogues import (
+from src.asset.dialogues import (
     start_dialog_not_registered,
     start_dialog_is_registered,
     help_dialog
 )
-from asset.text_logo import logo
-from src.loader import dispatcher, db
-from src.bot.handlers import track, test_alert, price
+from src.asset.text_logo import logo
+from src.utils.loader import dispatcher, db
+from src.bot.handlers import track, test_alert, price, get_user_data
 from src.blockchain import BlockChainRaceTrack
 
 
@@ -46,6 +46,8 @@ async def on_startup(dispatcher: Dispatcher):
     track.register_callback_query_handler(dispatcher)
 
     test_alert.register_message_handler(dispatcher)
+
+    get_user_data.register_message_handler(dispatcher)
 
     asyncio.create_task(BlockChainRaceTrack().track_crypto())
 

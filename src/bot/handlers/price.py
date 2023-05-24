@@ -1,9 +1,9 @@
 import random
 
 from aiogram import types, Dispatcher
-from asset.dialogues import price_dialog, specify_currency_price, buzcoin_dialog
+from src.asset.dialogues import price_dialog, specify_currency_price, buzcoin_dialog
 from src.bot.keyboards.inline.currency import keyboard_price
-from src.loader import blockchain, bot
+from src.utils.loader import blockchain, bot
 
 
 def register_message_handler(dispatcher: Dispatcher):

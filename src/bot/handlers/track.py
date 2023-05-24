@@ -4,14 +4,14 @@ from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.types import InlineKeyboardMarkup
 
-from asset.dialogues import (
+from src.asset.dialogues import (
     tracks_dialog, indicate_price, specify_currency_track,
     only_numbers, again, notification_alert_below, notification_alert_higher
 )
 from src.bot.keyboards.inline.currency import keyboard_tracks
 from src.bot.keyboards.inline.tracks_inline import keyboard_traces
-from src.loader import db, bot
-from src.number_formatting import formatting
+from src.utils.loader import db, bot
+from src.utils.number_formatting import formatting
 from src.bot.states.tracks import Tracks
 
 # KEYBOARDS

@@ -5,7 +5,7 @@ import requests
 
 from src.bot.send.below import send_message_below
 from src.bot.send.higher import send_message_higher
-from src.number_formatting import formatting
+from src.utils.number_formatting import formatting
 
 logger = logging.getLogger('root')
 
@@ -25,10 +25,17 @@ class BlockChainAPI(EndPoints):
     def get(self, end_point):
         url = self.base_url + end_point
         logger.info(f"Request - {url}")
-        response = requests.get(url=url)
+
+        try:
+            response = requests.get(url=url)
+        except Exception as error:
+            logger.error(error)
+            raise Exception("Error get")
+
         if response.status_code != 200:
             logger.error(f"Error {response.status_code} - {response.text}")
             raise Exception("Error fetching data")
+
         data = response.json()
         logger.info(f"Response {response.status_code} - {data}")
         return data
@@ -69,7 +76,7 @@ class BlockChainRaceTrack(BlockChainPrice):
 
     def __init__(self):
         super().__init__()
-        from src.loader import db
+        from src.utils.loader import db
         self.db = db
 
     def get_currency_data(self) -> list[dict]:
