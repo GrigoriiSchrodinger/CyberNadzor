@@ -1,13 +1,17 @@
-name: learn-github-actions
-run-name: ${{ github.actor }} is learning GitHub Actions
+name: unit-test
+run-name: ${{ github.actor }} run UnitTests
 on: [push]
+
 jobs:
-  check-bats-version:
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11"]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '14'
-      - run: npm install -g bats
-      - run: bats -v
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+      - name: Test with pytest
+        run: |
+           python -m unittest discover src/test
