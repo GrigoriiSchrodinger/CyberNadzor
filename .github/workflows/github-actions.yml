@@ -14,4 +14,5 @@ jobs:
           python -m pip install --upgrade pip
       - name: Test with pytest
         run: |
-           python -m unittest discover src/test
+          cd src
+          python -m unittest discover -s ./test  -p 'test_*.py'
