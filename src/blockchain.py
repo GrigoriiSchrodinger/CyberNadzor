@@ -125,12 +125,16 @@ class BlockChainRaceTrack(BlockChainPrice):
         уведомляя пользователей, если цена достигает заданного уровня
         """
         while True:
-            currency_data = self.get_currency_data()
-            users_data = self.db.get_users_data()
+            try:
+                currency_data = self.get_currency_data()
+                users_data = self.db.get_users_data()
 
-            users_data_higher = users_data["higher"]
-            users_data_below = users_data["below"]
+                users_data_higher = users_data["higher"]
+                users_data_below = users_data["below"]
 
-            await self.notify_users(users_data_higher, users_data_below, currency_data)
+                await self.notify_users(users_data_higher, users_data_below, currency_data)
 
-            await asyncio.sleep(60)
+                await asyncio.sleep(60)
+            except Exception as error:
+                logger.error(f"Error {error}")
+
